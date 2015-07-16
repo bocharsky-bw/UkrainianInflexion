@@ -94,6 +94,9 @@ class Letter
     {
         $letter = (string)$letter;
         $letter = trim($letter);
+        if (in_array($letter, ['’', '`', "'", '"',])) {
+            $letter = '’'; // transform possible apostrophe sign to correct one
+        }
         $this->uppercaseLetter = $this->convertToUpper($letter);
         $this->lowercaseLetter = $this->convertToLower($letter);
         if (!$this->isValid()) {
@@ -143,12 +146,20 @@ class Letter
         return $this->type;
     }
 
-    public function isValid()
+    /**
+     * @return int
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+    protected function isValid()
     {
         return in_array($this->lowercaseLetter, static::$alphabet);
     }
 
-    public function determineCase()
+    protected function determineCase()
     {
         if (0 === strcmp($this->letter, $this->uppercaseLetter)) {
             return CASE_UPPER;
@@ -157,7 +168,7 @@ class Letter
         return CASE_LOWER;
     }
 
-    public function determineType()
+    protected function determineType()
     {
         if (false) {
             ;
@@ -174,7 +185,7 @@ class Letter
         return static::TYPE_UNDEFINED;
     }
 
-    public function determinePosition()
+    protected function determinePosition()
     {
         $keys = array_keys(static::$alphabet, $this->lowercaseLetter);
 
